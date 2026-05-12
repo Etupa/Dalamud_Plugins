@@ -1,0 +1,6 @@
+[submodule "NameplateToggle"]
+	path = NameplateToggle
+	url = https://github.com/Etupa/NameplateToggle.git
+[submodule "EmoteGrid"]
+	path = EmoteGrid
+	url = https://github.com/Etupa/EmoteGrid.git
