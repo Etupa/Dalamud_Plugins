@@ -14,10 +14,10 @@
     "RepoUrl": "https://github.com/Etupa/EmoteGrid",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 15,
-    "IconUrl": "https://raw.githubusercontent.com/Etupa/EmoteGrid/master/icon.png",
-    "DownloadLinkInstall": "https://github.com/Etupa/EmoteGrid/releases/latest/download/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/Etupa/EmoteGrid/releases/latest/download/latest.zip",
-    "DownloadLinkTesting": "https://github.com/Etupa/EmoteGrid/releases/latest/download/latest.zip"
+    "IconUrl": "https://raw.githubusercontent.com/Etupa/Dalamud_Plugins/master/EmoteGrid/icon.png",
+    "DownloadLinkInstall": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/EmoteGrid.zip",
+    "DownloadLinkUpdate": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/EmoteGrid.zip",
+    "DownloadLinkTesting": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/EmoteGrid.zip"
   },
   {
     "Author": "Etupa",
@@ -33,9 +33,9 @@
       "Nameplate",
       "Toggle"
     ],
-    "IconUrl": "https://raw.githubusercontent.com/Etupa/NameplateToggle/master/icon.png",
-    "DownloadLinkInstall": "https://github.com/Etupa/NameplateToggle/releases/latest/download/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/Etupa/NameplateToggle/releases/latest/download/latest.zip",
-    "DownloadLinkTesting": "https://github.com/Etupa/NameplateToggle/releases/latest/download/latest.zip"
+    "IconUrl": "https://raw.githubusercontent.com/Etupa/Dalamud_Plugins/master/NameplateToggle/icon.png",
+    "DownloadLinkInstall": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/NameplateToggle.zip",
+    "DownloadLinkUpdate": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/NameplateToggle.zip",
+    "DownloadLinkTesting": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/NameplateToggle.zip"
   }
 ]
