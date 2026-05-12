@@ -34,8 +34,10 @@ public class MainWindow : Window, IDisposable {
             MinimumSize = new Vector2(300, 300),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
+    }
 
-        LoadEmotes();
+    public override void OnOpen() {
+        RefreshEmotes();
     }
 
     public override void PreDraw() {
@@ -66,11 +68,8 @@ public class MainWindow : Window, IDisposable {
             var cat = emote.EmoteCategory.RowId;
             if (cat == 0) continue;
 
-            var unlockLink = emote.UnlockLink;
-            if (unlockLink != 0) {
-                if (!FFXIVClientStructs.FFXIV.Client.Game.UI.UIState.Instance()->IsUnlockLinkUnlocked(unlockLink)) {
-                    continue;
-                }
+            if (!FFXIVClientStructs.FFXIV.Client.Game.UI.UIState.Instance()->IsEmoteUnlocked((ushort)emote.RowId)) {
+                continue;
             }
 
             _emotes.Add(new EmoteData {
