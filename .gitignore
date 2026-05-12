@@ -4,3 +4,9 @@ bin/
 *.user
 .cache/
 .direnv/
+Temp_Collections/
+.dotnet-sdk/
+*.suo
+*.sln.DotSettings.user
+*.zip
+latest.zip
