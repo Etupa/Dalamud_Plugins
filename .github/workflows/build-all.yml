@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force build and release all plugins regardless of version bump'
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -17,38 +22,97 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
+          fetch-depth: 0
           submodules: recursive
 
+      - name: Check Plugin Versions
+        id: check_version
+        shell: pwsh
+        run: |
+          $beforeSha = "${{ github.event.before }}"
+          $baseRef = "${{ github.base_ref }}"
+          $force = "${{ inputs.force }}" -eq "true"
+
+          $prevContent = ""
+          if ($beforeSha -and $beforeSha -ne "0000000000000000000000000000000000000000") {
+              try { $prevContent = git show "${beforeSha}:pluginmaster.json" 2>$null | Out-String } catch {}
+          }
+          if (-not $prevContent -and $baseRef) {
+              try { $prevContent = git show "origin/${baseRef}:pluginmaster.json" 2>$null | Out-String } catch {}
+          }
+          if (-not $prevContent) {
+              try { $prevContent = git show "HEAD~1:pluginmaster.json" 2>$null | Out-String } catch {}
+          }
+
+          if ($prevContent) {
+              try {
+                  $prevJson = $prevContent | ConvertFrom-Json
+              } catch {
+                  $prevJson = @()
+              }
+          } else {
+              $prevJson = @()
+          }
+
+          $currJson = Get-Content pluginmaster.json -Raw | ConvertFrom-Json
+
+          $prevEmote = ($prevJson | Where-Object { $_.InternalName -eq 'EmoteGrid' }).AssemblyVersion
+          $currEmote = ($currJson | Where-Object { $_.InternalName -eq 'EmoteGrid' }).AssemblyVersion
+          $emoteChanged = ($force -or ($currEmote -ne $null -and $currEmote -ne $prevEmote))
+
+          $prevNameplate = ($prevJson | Where-Object { $_.InternalName -eq 'NameplateToggle' }).AssemblyVersion
+          $currNameplate = ($currJson | Where-Object { $_.InternalName -eq 'NameplateToggle' }).AssemblyVersion
+          $nameplateChanged = ($force -or ($currNameplate -ne $null -and $currNameplate -ne $prevNameplate))
+
+          $anyChanged = ($emoteChanged -or $nameplateChanged)
+
+          Write-Host "Force Build: $force"
+          Write-Host "EmoteGrid Version: $prevEmote -> $currEmote (Changed: $emoteChanged)"
+          Write-Host "NameplateToggle Version: $prevNameplate -> $currNameplate (Changed: $nameplateChanged)"
+          Write-Host "Any Plugin Changed: $anyChanged"
+
+          "emotegrid_changed=$($emoteChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          "nameplatetoggle_changed=$($nameplateChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          "any_changed=$($anyChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+
       - name: Setup .NET
+        if: steps.check_version.outputs.any_changed == 'true' || github.event_name == 'pull_request'
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
 
       - name: Download Dalamud
+        if: steps.check_version.outputs.any_changed == 'true' || github.event_name == 'pull_request'
         run: |
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
 
       - name: Build EmoteGrid
+        if: steps.check_version.outputs.emotegrid_changed == 'true' || github.event_name == 'pull_request'
         run: dotnet build EmoteGrid/EmoteGrid.csproj -c Release --output ./artifacts/EmoteGrid
 
       - name: Build NameplateToggle
+        if: steps.check_version.outputs.nameplatetoggle_changed == 'true' || github.event_name == 'pull_request'
         run: dotnet build NameplateToggle/NameplateToggle.csproj -c Release --output ./artifacts/NameplateToggle
 
       - name: Zip Plugins
+        if: steps.check_version.outputs.any_changed == 'true' || github.event_name == 'pull_request'
         run: |
-          Compress-Archive -Path ./artifacts/EmoteGrid/* -DestinationPath ./artifacts/EmoteGrid.zip
-          Compress-Archive -Path ./artifacts/NameplateToggle/* -DestinationPath ./artifacts/NameplateToggle.zip
+          if (Test-Path "./artifacts/EmoteGrid") {
+            Compress-Archive -Path ./artifacts/EmoteGrid/* -DestinationPath ./artifacts/EmoteGrid.zip -Force
+          }
+          if (Test-Path "./artifacts/NameplateToggle") {
+            Compress-Archive -Path ./artifacts/NameplateToggle/* -DestinationPath ./artifacts/NameplateToggle.zip -Force
+          }
 
       - name: Release Plugins
         uses: softprops/action-gh-release@v3
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' && steps.check_version.outputs.any_changed == 'true'
         with:
           name: "Latest Plugin Releases"
           tag_name: latest
           files: |
-            ./artifacts/EmoteGrid.zip
-            ./artifacts/NameplateToggle.zip
+            ./artifacts/*.zip
           draft: false
           prerelease: false
         env:
@@ -56,6 +120,8 @@ jobs:
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
+        if: steps.check_version.outputs.any_changed == 'true' || github.event_name == 'pull_request'
         with:
           name: AllPlugins
           path: ./artifacts/
+
