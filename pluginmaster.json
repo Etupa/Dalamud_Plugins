@@ -10,7 +10,7 @@
       "emotegrid"
     ],
     "InternalName": "EmoteGrid",
-    "AssemblyVersion": "1.1.0.0",
+    "AssemblyVersion": "1.2.0.0",
     "RepoUrl": "https://github.com/Etupa/EmoteGrid",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 15,
@@ -25,7 +25,7 @@
     "Punchline": "Quickly toggle nameplate presets via chat commands.",
     "Description": "Quickly toggle nameplate presets via chat commands.",
     "InternalName": "NameplateToggle",
-    "AssemblyVersion": "0.0.0.1",
+    "AssemblyVersion": "1.0.0.0",
     "RepoUrl": "https://github.com/Etupa/NameplateToggle",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 15,
