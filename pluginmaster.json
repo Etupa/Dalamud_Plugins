@@ -37,5 +37,27 @@
     "DownloadLinkInstall": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/NameplateToggle.zip",
     "DownloadLinkUpdate": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/NameplateToggle.zip",
     "DownloadLinkTesting": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/NameplateToggle.zip"
+  },
+  {
+    "Author": "Etupa",
+    "Name": "Screen Preset Switcher",
+    "Punchline": "Quickly switch screen resolution and monitor presets.",
+    "Description": "Easily switch FFXIV screen resolution and target monitors using customizable presets and hotkeys.",
+    "InternalName": "ScreenPresetSwitcher",
+    "AssemblyVersion": "1.0.0.0",
+    "RepoUrl": "https://github.com/Etupa/ScreenPresetSwitcher",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 15,
+    "Tags": [
+      "utility",
+      "screen",
+      "resolution",
+      "preset",
+      "display"
+    ],
+    "IconUrl": "https://raw.githubusercontent.com/Etupa/Dalamud_Plugins/master/ScreenPresetSwitcher/icon.png",
+    "DownloadLinkInstall": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/ScreenPresetSwitcher.zip",
+    "DownloadLinkUpdate": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/ScreenPresetSwitcher.zip",
+    "DownloadLinkTesting": "https://github.com/Etupa/Dalamud_Plugins/releases/latest/download/ScreenPresetSwitcher.zip"
   }
 ]

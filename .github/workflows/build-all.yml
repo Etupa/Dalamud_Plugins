@@ -64,15 +64,21 @@ jobs:
           $currNameplate = ($currJson | Where-Object { $_.InternalName -eq 'NameplateToggle' }).AssemblyVersion
           $nameplateChanged = ($force -or ($currNameplate -ne $null -and $currNameplate -ne $prevNameplate))
 
-          $anyChanged = ($emoteChanged -or $nameplateChanged)
+          $prevScreen = ($prevJson | Where-Object { $_.InternalName -eq 'ScreenPresetSwitcher' }).AssemblyVersion
+          $currScreen = ($currJson | Where-Object { $_.InternalName -eq 'ScreenPresetSwitcher' }).AssemblyVersion
+          $screenChanged = ($force -or ($currScreen -ne $null -and $currScreen -ne $prevScreen))
+
+          $anyChanged = ($emoteChanged -or $nameplateChanged -or $screenChanged)
 
           Write-Host "Force Build: $force"
           Write-Host "EmoteGrid Version: $prevEmote -> $currEmote (Changed: $emoteChanged)"
           Write-Host "NameplateToggle Version: $prevNameplate -> $currNameplate (Changed: $nameplateChanged)"
+          Write-Host "ScreenPresetSwitcher Version: $prevScreen -> $currScreen (Changed: $screenChanged)"
           Write-Host "Any Plugin Changed: $anyChanged"
 
           "emotegrid_changed=$($emoteChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
           "nameplatetoggle_changed=$($nameplateChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          "screenpresetswitcher_changed=$($screenChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
           "any_changed=$($anyChanged.ToString().ToLower())" >> $env:GITHUB_OUTPUT
 
       - name: Setup .NET
@@ -95,6 +101,10 @@ jobs:
         if: steps.check_version.outputs.nameplatetoggle_changed == 'true' || github.event_name == 'pull_request'
         run: dotnet build NameplateToggle/NameplateToggle.csproj -c Release --output ./artifacts/NameplateToggle
 
+      - name: Build ScreenPresetSwitcher
+        if: steps.check_version.outputs.screenpresetswitcher_changed == 'true' || github.event_name == 'pull_request'
+        run: dotnet build ScreenPresetSwitcher/ScreenPresetSwitcher.csproj -c Release --output ./artifacts/ScreenPresetSwitcher
+
       - name: Zip Plugins
         if: steps.check_version.outputs.any_changed == 'true' || github.event_name == 'pull_request'
         run: |
@@ -103,6 +113,9 @@ jobs:
           }
           if (Test-Path "./artifacts/NameplateToggle") {
             Compress-Archive -Path ./artifacts/NameplateToggle/* -DestinationPath ./artifacts/NameplateToggle.zip -Force
+          }
+          if (Test-Path "./artifacts/ScreenPresetSwitcher") {
+            Compress-Archive -Path ./artifacts/ScreenPresetSwitcher/* -DestinationPath ./artifacts/ScreenPresetSwitcher.zip -Force
           }
 
       - name: Release Plugins

@@ -4,3 +4,6 @@
 [submodule "EmoteGrid"]
 	path = EmoteGrid
 	url = https://github.com/Etupa/EmoteGrid.git
+[submodule "ScreenPresetSwitcher"]
+	path = ScreenPresetSwitcher
+	url = https://github.com/Etupa/ScreenPresetSwitcher.git
